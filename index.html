@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NewYearRescue</title>
+	<style>
+		* {
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+
+		body {
+			display: -webkit-flex;
+			display: -moz-flex;
+			display: -ms-flex;
+			display: -o-flex;
+			display: flex;
+			margin: 0;
+		}
+
+		.wrapper {
+			margin: 12px auto;
+			padding: 12px;
+			border: 1px solid  #000;
+		}
+	</style>
+	<link rel="stylesheet" href="css/preloader.css">
+</head>
+<body>
+	<div class="wrapper">
+		<div class="game-wrapper">
+			<div class="preloader">
+				<div class="loader-wrapper">
+					<div class="logo"></div>
+					<div class="loader"></div>
+				</div>
+			</div>
+			<canvas id="game-canvas">
+				
+			</canvas>
+		</div>
+	</div>
+	<link rel="stylesheet" href="dist/style.min.css">
+	<script src="dist/core.min.js"></script>
+</body>
+</html>
