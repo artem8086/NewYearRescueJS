@@ -1,7 +1,7 @@
 var Game;
 
 Game = (function() {
-  var instance;
+  var instance, keyHandlers;
 
   class Game {
     constructor() {
@@ -10,16 +10,50 @@ Game = (function() {
       this.canvas.height = Game.height;
       this.canvas.lineWidth = 2;
       this.context = this.canvas.getContext('2d');
+      
+      document.addEventListener('keyup', function(e) {
+        var gw, handler, name;
+        if (e.keyCode === 70) {
+          gw = $$('.game-wrapper');
+          if (typeof gw.requestFullscreen === "function") {
+            gw.requestFullscreen();
+          }
+          if (typeof gw.mozRequestFullScreen === "function") {
+            gw.mozRequestFullScreen();
+          }
+          return typeof gw.webkitRequestFullscreen === "function" ? gw.webkitRequestFullscreen() : void 0;
+        } else {
+          for (name in keyHandlers) {
+            handler = keyHandlers[name];
+            handler.keyUp.call(handler.obj, e.keyCode);
+          }
+          return e.stopPropagation();
+        }
+      });
+      document.addEventListener('keydown', function(e) {
+        var handler, name;
+        for (name in keyHandlers) {
+          handler = keyHandlers[name];
+          handler.keyDown.call(handler.obj, e.keyCode);
+        }
+        return e.stopPropagation();
+      });
     }
 
     load(load_callback) {
       // Settings load
-      this.settings = settings.load();
+      this.settings = Settings.load();
       // Animation load
       Animation.load();
       this.engine = new Engine();
+      Engine.initObjects();
+      this.engine.init();
       load_callback();
       return this;
+    }
+
+    setKeyHandler(name, handler) {
+      return keyHandlers[name] = handler;
     }
 
     run(proc) {
@@ -31,7 +65,7 @@ Game = (function() {
         game = Game.getGame();
         proc.act(game);
         return proc.draw(game.context);
-      }), this.TIME_FRAME);
+      }), Game.TIME_FRAME);
     }
 
     static getGame() {
@@ -41,6 +75,8 @@ Game = (function() {
   };
 
   instance = null;
+
+  keyHandlers = [];
 
   Game.width = 1024;
 

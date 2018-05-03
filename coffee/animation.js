@@ -33,6 +33,17 @@
       }
     };
 
+    Animation.prototype.setAnimAndSet = function(set, num) {
+      var anim;
+      this.animSet = set;
+      anim = set.sets[num];
+      if (anim !== this.current) {
+        this.current = anim;
+        this.time = anim.frameTime;
+        return this.nFrame = 0;
+      }
+    };
+
     Animation.prototype.reset = function() {
       this.time = this.current.frameTime;
       return this.nFrame = 0;
@@ -117,9 +128,9 @@
       if (zoom == null) {
         zoom = 1;
       }
-      layer = Game.getGame().engine.layer;
-      xL = layer.x;
-      yL = layer.y;
+      layer = Game.getGame().engine.curLayer;
+      xL = layer.x + Game.width / 2;
+      yL = layer.y + Game.height / 2;
       x -= xL;
       y -= yL;
       z = .0;

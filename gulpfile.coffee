@@ -29,6 +29,8 @@ gulp.task 'concat', ->
 		.pipe concat 'style.min.css', newLine: ''
 		.pipe gulp.dest 'dist'
 		.pipe do connect.reload
+		.on 'error', (err) ->
+			console.log err
 
 gulp.task 'coffee', ->
 	src = gulp.src ['coffee/*.coffee', 'coffee/**/*.coffee']
@@ -36,6 +38,8 @@ gulp.task 'coffee', ->
 		src = src
 			.pipe coffee bare: on
 			.pipe gulp.dest 'js'
+			.on 'error', (err) ->
+				console.log err
 	catch e
 		console.log e
 	src
@@ -44,12 +48,15 @@ gulp.task 'js_concat', ->
 	gulp.src [
 		#'js/a_start_wrappper.js',
 		'js/*.js',
-		'js/**/*.js']#,
+		'js/**/*.js',
+		'js/data/**/*.js']#,
 		#'js/z_end_wrapper.js']
 		.pipe concat 'core.min.js', newLine: ''
 		#.pipe do uglify
 		.pipe gulp.dest 'dist'
 		.pipe do connect.reload
+		.on 'error', (err) ->
+			console.log err
 
 gulp.task 'html', ->
 	gulp.src '*.html'

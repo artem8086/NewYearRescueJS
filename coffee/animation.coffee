@@ -20,11 +20,21 @@ class Animation
 			@time = anim.frameTime
 			@nFrame = 0;
 	
+	setAnimAndSet: (set, num) ->
+		@animSet = set
+		anim = set.sets[num]
+		if anim != @current
+			@current = anim;
+			@time = anim.frameTime
+			@nFrame = 0;
+	
 	reset: ->
+		do @next?.reset
 		@time = @current.frameTime
 		@nFrame = 0
 
 	incAnim: (cycle = true) ->
+		@next?.incAnim cycle
 		@time--
 		if @time <= 0
 			@time = @current.frameTime
@@ -36,15 +46,20 @@ class Animation
 
 	play: (g, x, y, flipX = off, flipY = off) ->
 		frame = @current.frames[@nFrame]
+		x1 = x
+		y1 = y
 		if frame?
-			x = if flipX then - x + frame.centerX - frame.width else x - frame.centerX
-			y = if flipY then - y - frame.centerY else y + frame.centerY - frame.height
+			x = if flipX then -x - frame.centerX else x - frame.centerX
+			y = if flipY then -y - frame.centerY else y + frame.centerY - frame.height
 			do g.save
-			g.scale (if flipX then -1 else 1), (if flipY then -1 else 1)
+			g.scale(
+				if flipX then -1 else 1,
+				if flipY then -1 else 1)
 			g.drawImage @animSet.img,
 				frame.x1, frame.y1, frame.x2, frame.y2,
 				x, y, frame.width, frame.height
 			do g.restore
+		@next?.play g, x1, y1, flipX, flipY
 		this
 
 
@@ -68,9 +83,9 @@ class Model
 		ret
 
 	play: (g, x, y, zoom = 1) ->
-		layer = Game.getGame().engine.layer
-		xL = layer.x
-		yL = layer.y
+		layer = Game.getGame().engine.curLayer
+		xL = layer.x + Game.width / 2
+		yL = layer.y + Game.height / 2
 		x -= xL
 		y -= yL
 		z = .0

@@ -32,12 +32,31 @@ Animation = class Animation {
     }
   }
 
+  setAnimAndSet(set, num) {
+    var anim;
+    this.animSet = set;
+    anim = set.sets[num];
+    if (anim !== this.current) {
+      this.current = anim;
+      this.time = anim.frameTime;
+      return this.nFrame = 0;
+    }
+  }
+
   reset() {
+    var ref;
+    if ((ref = this.next) != null) {
+      ref.reset();
+    }
     this.time = this.current.frameTime;
     return this.nFrame = 0;
   }
 
   incAnim(cycle = true) {
+    var ref;
+    if ((ref = this.next) != null) {
+      ref.incAnim(cycle);
+    }
     this.time--;
     if (this.time <= 0) {
       this.time = this.current.frameTime;
@@ -51,15 +70,20 @@ Animation = class Animation {
   }
 
   play(g, x, y, flipX = false, flipY = false) {
-    var frame;
+    var frame, ref, x1, y1;
     frame = this.current.frames[this.nFrame];
+    x1 = x;
+    y1 = y;
     if (frame != null) {
-      x = flipX ? -x + frame.centerX - frame.width : x - frame.centerX;
+      x = flipX ? -x - frame.centerX : x - frame.centerX;
       y = flipY ? -y - frame.centerY : y + frame.centerY - frame.height;
       g.save();
-      g.scale((flipX ? -1 : 1), (flipY ? -1 : 1));
+      g.scale(flipX ? -1 : 1, flipY ? -1 : 1);
       g.drawImage(this.animSet.img, frame.x1, frame.y1, frame.x2, frame.y2, x, y, frame.width, frame.height);
       g.restore();
+    }
+    if ((ref = this.next) != null) {
+      ref.play(g, x1, y1, flipX, flipY);
     }
     return this;
   }
@@ -96,9 +120,9 @@ Model = (function() {
 
     play(g, x, y, zoom = 1) {
       var i, indx, j, k, layer, len, len1, n, poly, ref, ref1, vert, verts, xL, yL, z;
-      layer = Game.getGame().engine.layer;
-      xL = layer.x;
-      yL = layer.y;
+      layer = Game.getGame().engine.curLayer;
+      xL = layer.x + Game.width / 2;
+      yL = layer.y + Game.height / 2;
       x -= xL;
       y -= yL;
       z = .0;

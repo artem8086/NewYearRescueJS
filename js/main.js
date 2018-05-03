@@ -17,6 +17,7 @@ window.addEventListener('load', function() {
       var engine;
       $$('.preloader').classList.add('done');
       engine = game.engine;
+      engine.numPlayers = 1;
       engine.loadLevel();
       return setTimeout((function() {
         return game.run(engine);
